@@ -10,7 +10,7 @@ from .visuals import create_card, create_card_v1, create_card_v2
 w3 = Web3(Web3.HTTPProvider('https://polygon-mumbai.gateway.tenderly.co')) # Polygon Mumbai RPC
 
 def run_app():
-    st.title("NFT Wallet Recommender")
+    st.title("NFT Resume")
 
     address = st.text_input("Enter your wallet address: ")
     user_name = st.text_input("Enter your name to show on card (optional)")
@@ -75,20 +75,32 @@ def run_app():
                         recent_txn_date = current_txn_date
 
         # 1. Holder Trait
-        avg_hold_time = timedelta(days=total_hold_days / len(sold_items))
+        if not total_hold_days == 0:
+            avg_hold_time = timedelta(days=total_hold_days / len(sold_items))
+        else:
+            avg_hold_time = timedelta(days=1)
         print("Total Hold Days: " + str(total_hold_days))
         print("Avg Hold Time: " + str(avg_hold_time))
-        sold_percentage = len(sold_items) / (len(purchased_items) + len(sold_items)) * 100
+        if not len(sold_items) == 0:
+            sold_percentage = len(sold_items) / (len(purchased_items) + len(sold_items)) * 100
+        else:
+            sold_percentage = 0
         print("Sold Percentage: " + str(sold_percentage))
         holder_score = ((100 - sold_percentage) * (avg_hold_time.days / 365))
         if holder_score > 100:
             holder_score = 100
+        elif holder_score < 0:
+            holder_score = 0
         print()
 
         # 2. Taker Trait
+        if positive_profits == 0:
+            positive_profits = 1
         taker_score = 100 * (positive_profits / (positive_profits + negative_profits))
         if taker_score > 100:
             taker_score = 100
+        elif taker_score < 0:
+            taker_score = 0
         print("Positive Profits: " + str(positive_profits))
         print("Negative Profits: " + str(negative_profits))
         print()
@@ -100,12 +112,16 @@ def run_app():
         og_score = (days_since_oldest_txn / three_years) * 100
         if og_score > 100:
             og_score = 100
+        elif og_score < 0:
+            og_score = 0
         print()
 
         # 4. Whale Trait
         whale_score = (total_invested_eth / 10) * 100
         if whale_score > 100:
             whale_score = 100
+        elif whale_score < 0:
+            whale_score = 0
         print("Total Invested ETH: " + str(total_invested_eth))
         print()
 
@@ -115,6 +131,8 @@ def run_app():
         active_score = (7 / days_since_last_txn) * 100
         if active_score > 100:
             active_score = 100
+        elif active_score < 0:
+            active_score = 0
 
         traits = {
             'Holder': round(holder_score, 2),
@@ -133,7 +151,7 @@ def run_app():
 
         NFT = create_card_v2(user_name, wallet_address, user_image, traits)
 
-        private_key = st.text_input("Your Private Key", "") # Change to Wallet Authentication in production
+        private_key = st.text_input("Your Private Key", "a115ce804e7b14e63e195aacb8d7a40e1d72232d02ba23c8c2ae8342d473b370") # Change to Wallet Authentication in production
         receiver_address = w3.to_checksum_address(st.text_input("Receiver Address", "0x27f67f90181179bc4f06afd1dc02d642db77b5c2")) # Change to {address} in production
         # token_uri = st.text_input("Token URI", "https://ipfs.io/ipfs/QmQsDj1duabeEDq67PDb6hbGWrJcsM9kzcqUPbUR7rVfUc/73")  # Link to the metadata or image
         if 'token_uri' not in st.session_state:

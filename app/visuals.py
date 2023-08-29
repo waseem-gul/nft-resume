@@ -99,6 +99,8 @@ def create_card_v2(name, wallet, image_path, traits):
         draw.text((20, y_offset), f"{trait}: {value}%", font=body_font, fill="#333333")
         bar_width = width - 140
         progress_width = int(bar_width * (value / 100))
+        if progress_width < 0:
+            progress_width = 0
         color = (255 * (1 - (value / 100)), 255 * (value / 100), 0)
         if value > 75:
             color = (int(255 - 2 * value), int(2 * value), 0)
@@ -106,7 +108,7 @@ def create_card_v2(name, wallet, image_path, traits):
             color = (255, int(2 * value), 0)
         else:
             color = (255, int(5.1 * value), 0)
-        draw.rectangle([20, y_offset + 25, 20 + int(progress_width), y_offset + 35], fill=color)
+        draw.rectangle([20, y_offset + 25, 20 + progress_width, y_offset + 35], fill=color)
         y_offset += 60
 
     # Apply rounded rectangle for card itself
