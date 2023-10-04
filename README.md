@@ -16,6 +16,8 @@ Create a .env file and add the following data
 ```python
 MORALIS_API_KEY = YOUR_KEY
 PRIVATE_KEY = YOUR_WEB3_WALLET_PRIVATE_KEY
+IPFS_ID = YOUR_IPFS_ID
+IPFS_SECRET = YOUR_IPFS_SECRET
 ```
 
 Then run the following command
