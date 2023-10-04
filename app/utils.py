@@ -1,15 +1,19 @@
 import requests
 import json
+import os
 import streamlit as st
 from io import BytesIO
 from datetime import datetime
 from web3 import Web3
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # w3 = Web3(Web3.HTTPProvider('https://rpc-mainnet.maticvigil.com/')) # Polygon mainnet RPC
 w3 = Web3(Web3.HTTPProvider('https://polygon-mumbai.gateway.tenderly.co')) # Polygon Mumbai RPC
 ABI = [...]  # Your contract ABI
 # Load ABI
-with open('contract_abi.json', 'r') as file:
+with open('./solidity/contract_abi.json', 'r') as file:
     contract_data = json.load(file)
     ABI = contract_data['abi']
 CONTRACT_ADDRESS = '0xd9145CCE52D386f254917e481eB44e9943F39138'
@@ -27,8 +31,8 @@ def date_to_timestamp(str_time):
 
 
 def upload_to_ipfs(file_path):
-    project_id = "2UB2n2k28dL6BIz1FIftDinhgRW"
-    project_secret = "7bfa22cee98b5b5938c9765259eb8a57"
+    project_id = os.getenv("IPFS_ID")
+    project_secret = os.getenv("IPFS_SECRET")
     endpoint = "https://ipfs.infura.io:5001"
     buffer = BytesIO()
     file_path.save(buffer, format="PNG")  # You can change PNG to another format if needed

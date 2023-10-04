@@ -1,10 +1,14 @@
 import streamlit as st
 import requests
 import random
+import os
 from datetime import datetime, timedelta
 from web3 import Web3
 from .utils import date_to_timestamp, upload_to_ipfs, mint_nft
 from .visuals import create_card, create_card_v1, create_card_v2
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # w3 = Web3(Web3.HTTPProvider('https://rpc-mainnet.maticvigil.com/')) # Polygon mainnet RPC
 w3 = Web3(Web3.HTTPProvider('https://polygon-mumbai.gateway.tenderly.co')) # Polygon Mumbai RPC
@@ -19,7 +23,7 @@ def run_app():
     if address:
         response = requests.get(
             f"https://deep-index.moralis.io/api/v2/{address}/nft/transfers?chain=eth&format=decimal&direction=both",
-            headers={"accept": "application/json", "X-API-Key": "MORALIS_API_KEY"}
+            headers={"accept": "application/json", "X-API-Key": os.getenv("MORALIS_API_KEY")}
         )
         data = response.json()
 
@@ -151,7 +155,7 @@ def run_app():
 
         NFT = create_card_v2(user_name, wallet_address, user_image, traits)
 
-        private_key = st.text_input("Your Private Key", "") # Change to Wallet Authentication in production
+        private_key = st.text_input("Your Private Key", os.getenv("PRIVATE_KEY")) # Change to Wallet Authentication in production
         receiver_address = w3.to_checksum_address(st.text_input("Receiver Address", address)) # Change to {address} in production
         # token_uri = st.text_input("Token URI", "https://ipfs.io/ipfs/QmQsDj1duabeEDq67PDb6hbGWrJcsM9kzcqUPbUR7rVfUc/73")  # Link to the metadata or image
         if 'token_uri' not in st.session_state:
