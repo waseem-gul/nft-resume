@@ -19,7 +19,7 @@ def run_app():
     if address:
         response = requests.get(
             f"https://deep-index.moralis.io/api/v2/{address}/nft/transfers?chain=eth&format=decimal&direction=both",
-            headers={"accept": "application/json", "X-API-Key": "UIYztcALi5uTDNyAlqBetK8DGLbY08SYbgQKEJoTXpuXNtchXFiqMD1qpHXNKCny"}
+            headers={"accept": "application/json", "X-API-Key": "MORALIS_API_KEY"}
         )
         data = response.json()
 
@@ -151,8 +151,8 @@ def run_app():
 
         NFT = create_card_v2(user_name, wallet_address, user_image, traits)
 
-        private_key = st.text_input("Your Private Key", "a115ce804e7b14e63e195aacb8d7a40e1d72232d02ba23c8c2ae8342d473b370") # Change to Wallet Authentication in production
-        receiver_address = w3.to_checksum_address(st.text_input("Receiver Address", "0x27f67f90181179bc4f06afd1dc02d642db77b5c2")) # Change to {address} in production
+        private_key = st.text_input("Your Private Key", "") # Change to Wallet Authentication in production
+        receiver_address = w3.to_checksum_address(st.text_input("Receiver Address", address)) # Change to {address} in production
         # token_uri = st.text_input("Token URI", "https://ipfs.io/ipfs/QmQsDj1duabeEDq67PDb6hbGWrJcsM9kzcqUPbUR7rVfUc/73")  # Link to the metadata or image
         if 'token_uri' not in st.session_state:
             st.session_state.token_uri = None
